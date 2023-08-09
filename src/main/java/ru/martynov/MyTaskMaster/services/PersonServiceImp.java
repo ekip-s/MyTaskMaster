@@ -38,7 +38,8 @@ public class PersonServiceImp implements PersonService {
         personRepository.save(person);
     }
 
-    private Person getUserById(long id) {
+    @Override
+    public Person getUserById(long id) {
         return personRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException("Нет пользователя с id=" + id + "."));

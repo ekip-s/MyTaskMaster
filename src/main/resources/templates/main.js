@@ -1,15 +1,14 @@
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     todos = JSON.parse(localStorage.getItem('todos')) || [];
     const nameInput = document.querySelector('#name');
     const newTodoForm = document.querySelector('#new-todo-form');
     getUsername(nameInput);
 
-    nameInput.addEventListener('change', e => {
-        setUsername(e.target.value);
-        //localStorage.setItem('username', e.target.value);
+    nameInput.addEventListener('change', async e => {
+        await setUsername(e.target.value);
     })
 
-    newTodoForm.addEventListener('submit', e=> {
+    newTodoForm.addEventListener('submit', async e=> {
         e.preventDefault();
 
         if (e.target.elements.content.value != "") {
@@ -23,31 +22,40 @@ window.addEventListener('load', () => {
         const todo = {
             content: e.target.elements.content.value,
             category: categoryValue,
-            done: false,
-            createdAt: new Date().getTime()
+            isDone: false, 
+            importanceLevel: 0
         }
 
-        todos.push(todo);
-
-        localStorage.setItem('todos', JSON.stringify(todos));
+        await postTask(todo);
 
         e.target.reset();
 
-        DisplayTodos();
+        await getTasks()
     }
     })
 
-    DisplayTodos();
+    await getTasks()
 });
 
-function DisplayTodos() {
-    const todoList = document.querySelector('#todo-list');
+async function getUsername(nameInput) {
+    const url = `http://localhost:122/person/1/username`;
+    const response = await fetch(url);
+    const answer = await response.text();
+    nameInput.value = answer; 
+}
 
+async function getTasks() {
+    const url = `http://localhost:122/task/1`;
+try {
+    const answer = await (await fetch(url)).json();
+
+    const todoList = document.querySelector('#todo-list');
     todoList.innerHTML = '';
 
-    todos.forEach(todo => {
+    answer.forEach(todo => {
         const todoItem = document.createElement('div');
         todoItem.classList.add('todo-item');
+        todoItem.id = todo.id;
 
         const span = document.createElement('span');
         const content = document.createElement('div');
@@ -88,25 +96,54 @@ function DisplayTodos() {
             todoItem.classList.add('done');
         }
 
-        deleteButton.addEventListener('click', e => {
-            todos = todos.filter(t => t != todo);
-            localStorage.setItem('todos', JSON.stringify(todos));
-            DisplayTodos();
-        })
-    })
-}
+        deleteButton.addEventListener('click', async e => {
+            let deleteUrl = `http://localhost:122/task/1/delete/${e.target.closest('.todo-item').id}`;
+            await fetch(deleteUrl, {
+                method: 'DELETE',
+                mode: 'cors' 
+                });
+            getTasks()
+        });
 
-async function getUsername(nameInput) {
-    const url = `http://localhost:122/person/1/username`;
-    const response = await fetch(url);
-    const answer = await response.text();
-    nameInput.value = answer; 
+        upButton.addEventListener('click', async e => {
+            let upUrl = `http://localhost:122/task/1/up/${e.target.closest('.todo-item').id}`;
+            await fetch(upUrl, {
+                method: 'PATCH',
+                mode: 'cors' 
+                });
+            getTasks()
+        });
+    })} catch (error) {
+        console.log(error);
+    }
 }
 
 async function setUsername(name) {
     let url = `http://localhost:122/person/1/username?newUsername=${name}`;
-    await fetch(url, {
-        method: 'PATCH',
-        mode: 'cors' 
-    });
+    try {
+        await fetch(url, {
+            method: 'PATCH',
+            mode: 'cors' 
+            });
+        } catch(err) {
+            console.error(err);
+        }
+}
+
+
+
+async function postTask(task) {
+    let url = `http://localhost:122/task/1`;
+    try {
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+                },
+                mode: 'cors',
+                body: JSON.stringify(task)
+                });
+            } catch(err) {
+                console.error(err)
+            }
 }

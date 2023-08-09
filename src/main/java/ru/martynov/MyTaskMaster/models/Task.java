@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Account")
+@Table(name = "Tasks")
 public class Task {
 
     @Id
@@ -30,10 +30,24 @@ public class Task {
     private boolean isDone;
     @Column(name = "created_at")
     @DateTimeFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
-    private LocalDateTime create_dt;
+    private LocalDateTime createDt;
     @Column(name = "importance_level")
     private int importanceLevel;
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
+
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", category=" + category +
+                ", isDone=" + isDone +
+                ", create_dt=" + createDt +
+                ", importanceLevel=" + importanceLevel +
+                ", person=" + person +
+                '}';
+    }
 }
