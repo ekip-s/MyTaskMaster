@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.martynov.MyTaskMaster.models.Task;
 import ru.martynov.MyTaskMaster.services.TaskService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task")
@@ -25,6 +27,7 @@ public class TaskController {
     @PostMapping("/{personId}")
     public void createTask(@PathVariable @Parameter(description = "id пользователя") Long personId,
                            @RequestBody Task task) {
+        log.info("Получен POST запрос к URL: '/task/{}'. Задание: {}", personId, task.toString());
         taskService.createTask(personId, task);
     }
 
@@ -34,6 +37,7 @@ public class TaskController {
     )
     @GetMapping("/{personId}")
     public List<Task> getTask(@PathVariable @Parameter(description = "id пользователя") Long personId) {
+        log.info("Получен GET запрос к URL: '/task/{}.'", personId);
         return taskService.searchTasks(personId);
     }
 
@@ -45,6 +49,7 @@ public class TaskController {
     public void deleteTask(@PathVariable @Parameter(description = "id пользователя") Long personId,
                            @PathVariable @Parameter(description = "id задания") Long taskId
                            ) {
+        log.info("Получен DELETE запрос к URL: '/task/{}/delete/{}'.", personId, taskId);
         taskService.deleteTask(personId, taskId);
     }
 
@@ -56,6 +61,31 @@ public class TaskController {
     public void upTask(@PathVariable @Parameter(description = "id пользователя") Long personId,
                            @PathVariable @Parameter(description = "id задания") Long taskId
     ) {
+        log.info("Получен PATCH запрос к URL: '/task/{}/up/{}'.", personId, taskId);
         taskService.upTask(personId, taskId);
+    }
+
+    @Operation(
+            summary = "Понизить приоритет задания",
+            description = "Понизить приоритет на -1, но не менее 0"
+    )
+    @PatchMapping("/{personId}/low/{taskId}")
+    public void lowTask(@PathVariable @Parameter(description = "id пользователя") Long personId,
+                       @PathVariable @Parameter(description = "id задания") Long taskId
+    ) {
+        log.info("Получен PATCH запрос к URL: '/task/{}/low/{}'.", personId, taskId);
+        taskService.lowTask(personId, taskId);
+    }
+
+    @Operation(
+            summary = "Выполнить задание",
+            description = "Задание помечается выполненным и приоритет падает до -1"
+    )
+    @PatchMapping("/{personId}/done/{taskId}")
+    public void doneTask(@PathVariable @Parameter(description = "id пользователя") Long personId,
+                        @PathVariable @Parameter(description = "id задания") Long taskId
+    ) {
+        log.info("Получен PATCH запрос к URL: '/task/{}/done/{}'.", personId, taskId);
+        taskService.doneTask(personId, taskId);
     }
 }

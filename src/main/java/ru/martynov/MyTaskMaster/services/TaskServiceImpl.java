@@ -2,8 +2,6 @@ package ru.martynov.MyTaskMaster.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.martynov.MyTaskMaster.exception.NotFoundException;
@@ -44,20 +42,36 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void upTask(long personId, long taskId) {
         Task task = getPersonById(taskId);
-        task.setImportanceLevel(task.getImportanceLevel() + 1);
-        taskRepository.save(task);
+        if(!task.isDone() && task.getImportanceLevel() < 100) {
+            task.setImportanceLevel(task.getImportanceLevel() + 1);
+            taskRepository.save(task);
+        }
     }
 
     @Override
-    public void performTask(long id) {
+    @Transactional
+    public void lowTask(long personId, long taskId) {
+        Task task = getPersonById(taskId);
+        if(!task.isDone() && task.getImportanceLevel() > -100) {
+            task.setImportanceLevel(task.getImportanceLevel() - 1);
+            taskRepository.save(task);
+        }
+    }
 
+    @Override
+    @Transactional
+    public void doneTask(long personId, long taskId) {
+        Task task = getPersonById(taskId);
+        if(!task.isDone()) {
+            taskRepository.save(task.doneTask());
+        }
     }
 
     @Override
     public List<Task> searchTasks(long personId) {
-
-        return taskRepository.findAll(Sort
-                .by("importanceLevel").descending().and(Sort.by("createDt")));
+        return taskRepository.searchTasks();
+        /*return taskRepository.findAll(Sort
+                .by("importanceLevel").descending().and(Sort.by("createDt")));*/
     }
 
     private Task getPersonById(long id) {

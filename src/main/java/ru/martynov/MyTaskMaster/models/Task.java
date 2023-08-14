@@ -37,6 +37,13 @@ public class Task {
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
+    public Task doneTask() {
+        this.setDone(true);
+        this.setImportanceLevel(-1000);
+
+        return this;
+    }
+
 
     @Override
     public String toString() {

@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.martynov.MyTaskMaster.models.Person;
 import ru.martynov.MyTaskMaster.services.PersonService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/person")
@@ -25,6 +27,7 @@ public class PersonControllers {
     )
     @GetMapping("/{personId}/username")
     public String getUsername(@PathVariable @Parameter(description = "id пользователя") Long personId) {
+        log.info("Получен GET запрос к URL: '/person/{}/username'.", personId);
         return personService.getUsername(personId);
     }
 
@@ -36,12 +39,13 @@ public class PersonControllers {
     public void setUsername(@RequestParam(defaultValue = "")
                                 @Parameter(description = "Новое имя пользователя") String newUsername,
                             @PathVariable @Parameter(description = "id пользователя") Long personId) {
+        log.info("Получен PATCH запрос к URL: '/person/{}/username'. Новый логин: {}", personId, newUsername);
         personService.setUsername(personId, newUsername);
     }
 
     @Operation(
             summary = "Лист пользователей",
-            description = "Лист пользователей. Импользуется только в тесте."
+            description = "Лист пользователей. Иcпользуется только в тесте."
     )
     @GetMapping()
     public List<Person> getPerson() {

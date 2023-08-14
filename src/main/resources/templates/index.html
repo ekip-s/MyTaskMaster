@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="main.css" />
 </head>
 <body>
-    <main class="app">
+<div class="wrapper">    
+<header class="heder">
+    <h2 class="logo">Egor-чик ToDo</h2>
+</header>
+
+<main class="app">
         <section class="greeting">
             <h2 class="title">
                 What's up, <input type="text" name="" id="name" placeholder="Вводи имя">
@@ -67,42 +72,23 @@
             <h3>Мои задачи:</h3>
             
             <div class="list" id="todo-list">
-                <!-- <div class="todo-item">
-                    <label>
-                        <input type="checkbox" />
-                        <span class="bubble business"></span>
-                    </label>
-
-                    <div class="todo-content">
-                        <input type="text" value="Make a video" readonly />
-                    </div>
-
-                    <div class="actions">
-                        <button class="edit">Edit</button>
-                        <button class="delete">Delete</button>
-                    </div>
-                </div>
-
-                <div class="todo-item">
-                    <label>
-                        <input type="checkbox" />
-                        <span class="bubble personal"></span>
-                    </label>
-
-                    <div class="todo-content">
-                        <input type="text" value="Get milk" readonly />
-                    </div>
-
-                    <div class="actions">
-                        <button class="edit">Edit</button>
-                        <button class="delete">Delete</button>
-                    </div>
-                </div> -->
             </div>
         </section>
+</main>
 
-        
-    </main>
-    <script src="main.js"></script>    
+<footer class="footer">
+    <a class="email_weblink" href="mailto:ekip-s@yandex.ru?subject=вопросы с сайта">create to Egor-чик</a>
+    <a class="ing_swagger_link ing_link" href="http://localhost:122/swagger-ui/index.html#/">
+        <img class="logo_img_gh" src="/image/Swagger-logo.png" alt="swagger">
+        <h2 class="ing_swagger_name ing_name">Swagger</h2>
+    </a>
+    <a class="ing_git_link ing_link" href="https://github.com/ekip-s/MyTaskMaster">
+        <img class="logo_img_gh" src="/image/github-mark.png" alt="Git">
+        <h2 class="ing_git_name ing_name">Git</h2>
+    </a>
+</footer>        
+
+<script src="main.js"></script>    
+</div>    
 </body>
 </html>

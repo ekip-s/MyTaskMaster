@@ -42,7 +42,7 @@ async function getUsername(nameInput) {
     const response = await fetch(url);
     const answer = await response.text();
     nameInput.value = answer; 
-}
+};
 
 async function getTasks() {
     const url = `http://localhost:122/task/1`;
@@ -61,8 +61,10 @@ try {
         const content = document.createElement('div');
         const actions = document.createElement('div');
         const edit = document.createElement('button');
-        const deleteButton = document.createElement('button')
-        const upButton = document.createElement('button')
+        const deleteButton = document.createElement('button');
+        const upButton = document.createElement('button');
+        const lowButton = document.createElement('button');
+        const doneButton = document.createElement('button');
 
         span.classList.add('bubble'); 
 
@@ -74,7 +76,9 @@ try {
 
         content.classList.add('todo-content');
         actions.classList.add('actions');
-        upButton.classList.add('up')
+        upButton.classList.add('up');
+        lowButton.classList.add('low');
+        doneButton.classList.add('done');
         deleteButton.classList.add('delete');
 
         content.innerHTML = 
@@ -83,8 +87,12 @@ try {
         `;
         
         deleteButton.innerHTML = 'Delete';
-        upButton.innerHTML = 'UP'
+        upButton.innerHTML = 'UP &#9650;';
+        lowButton.innerHTML = 'LOW &#9660;';
+        doneButton.innerHTML = 'Done';
 
+        actions.appendChild(doneButton);
+        actions.appendChild(lowButton);
         actions.appendChild(upButton);
         actions.appendChild(deleteButton);
         todoItem.appendChild(content);
@@ -107,6 +115,24 @@ try {
 
         upButton.addEventListener('click', async e => {
             let upUrl = `http://localhost:122/task/1/up/${e.target.closest('.todo-item').id}`;
+            await fetch(upUrl, {
+                method: 'PATCH',
+                mode: 'cors' 
+                });
+            getTasks()
+        });
+
+        lowButton.addEventListener('click', async e => {
+            let upUrl = `http://localhost:122/task/1/low/${e.target.closest('.todo-item').id}`;
+            await fetch(upUrl, {
+                method: 'PATCH',
+                mode: 'cors' 
+                });
+            getTasks()
+        });
+
+        doneButton.addEventListener('click', async e => {
+            let upUrl = `http://localhost:122/task/1/done/${e.target.closest('.todo-item').id}`;
             await fetch(upUrl, {
                 method: 'PATCH',
                 mode: 'cors' 
