@@ -224,6 +224,12 @@ input:checked ~ .bubble::after {
 
 .todo-item .todo-content {
     flex: 1 1 0%;
+    display: flex;
+}
+
+.todo-info {
+    width: 30%;
+    padding-left: 4%;
 }
 
 .todo-item .todo-content input {

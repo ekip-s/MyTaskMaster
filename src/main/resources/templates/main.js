@@ -1,12 +1,21 @@
+let searchParam;
+
 window.addEventListener('load', async () => {
     todos = JSON.parse(localStorage.getItem('todos')) || [];
     const nameInput = document.querySelector('#name');
+    const selectForm = document.querySelector('#select');
     const newTodoForm = document.querySelector('#new-todo-form');
+    searchParam = 'business';
     getUsername(nameInput);
 
     nameInput.addEventListener('change', async e => {
         await setUsername(e.target.value);
-    })
+    });
+
+    selectForm.addEventListener('change', e=> {
+        searchParam = e.target.value;
+        console.log(searchParam);
+    });
 
     newTodoForm.addEventListener('submit', async e=> {
         e.preventDefault();
@@ -56,6 +65,7 @@ try {
         const todoItem = document.createElement('div');
         todoItem.classList.add('todo-item');
         todoItem.id = todo.id;
+        let createDate = new Date(todo.createDt);
 
         const span = document.createElement('span');
         const content = document.createElement('div');
@@ -84,6 +94,12 @@ try {
         content.innerHTML = 
         `
         <textarea readonly>${todo.content}</textarea>
+        <p class="todo-info">
+        Дата создания: ${createDate.getDate() + "." + createDate.getMonth() + "." + createDate.getFullYear() +
+         " " + createDate.getHours() + ":" + (createDate.getMinutes()<10?'0':'') + createDate.getMinutes()};
+                        <br>
+        Уровень значимости: ${todo.importanceLevel==-1000?'done':todo.importanceLevel};
+        </p>
         `;
         
         deleteButton.innerHTML = 'Delete';
